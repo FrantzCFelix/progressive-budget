@@ -1,5 +1,3 @@
-'use strict';
-
 const pendingObjectStoreName = `pending`;
 
 // create a new db request for a "budget" database.

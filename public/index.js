@@ -1,4 +1,10 @@
-'use strict';
+if (`serviceWorker` in navigator) {
+  window.addEventListener(`load`, () => {
+    navigator.serviceWorker.register(`/service-worker.js`)
+      .then(reg =>
+        console.log(`Service worker registered.`, reg));
+  });
+}
 
 let transactions = [];
 let myChart;
@@ -8,6 +14,7 @@ fetch(`/api/transaction`)
   .then(data => {
     // save db data on global variable
     transactions = data;
+
     populateTotal();
     populateTable();
     populateChart();
@@ -15,10 +22,7 @@ fetch(`/api/transaction`)
 
 function populateTotal() {
   // reduce transaction amounts to a single total value
-  const total = transactions.reduce(
-    (currTotal, t) => currTotal + parseInt(t.value),
-    0
-  );
+  const total = transactions.reduce((currTotal, t) => currTotal + parseInt(t.value), 0);
 
   const totalEl = document.querySelector(`#total`);
   totalEl.textContent = total;
@@ -62,7 +66,7 @@ function populateChart() {
     myChart.destroy();
   }
 
-  const ctx = document.getElementById(`my-chart`).getContext(`2d`);
+  const ctx = document.getElementById(`myChart`).getContext(`2d`);
 
   myChart = new Chart(ctx, {
     type: `line`,
@@ -83,7 +87,7 @@ function populateChart() {
 function sendTransaction(isAdding) {
   const nameEl = document.querySelector(`#t-name`);
   const amountEl = document.querySelector(`#t-amount`);
-  const errorEl = document.querySelector(`form .error`);
+  const errorEl = document.querySelector(`.form .error`);
 
   // validate form
   if (nameEl.value === `` || amountEl.value === ``) {
@@ -133,23 +137,16 @@ function sendTransaction(isAdding) {
       }
     })
     .catch(err => {
+      console.error(err);
+
       // fetch failed, so save in indexed db
       saveRecord(transaction);
 
       // clear form
       nameEl.value = ``;
       amountEl.value = ``;
-
-      console.error(err);
     });
 }
 
-document.querySelector(`#add-btn`).addEventListener(`click`, event => {
-  event.preventDefault();
-  sendTransaction(true);
-});
-
-document.querySelector(`#sub-btn`).addEventListener(`click`, event => {
-  event.preventDefault();
-  sendTransaction(false);
-});
+document.querySelector(`#add-btn`).onclick = () => sendTransaction(true);
+document.querySelector(`#sub-btn`).onclick = () => sendTransaction(false);

@@ -11,7 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "compression": "^1.7.4",
     "express": "^4.17.1",
-    "mongoose": "^5.9.5"
+    "http-status-code": "^2.1.0",
+    "lite-server": "^2.5.4",
+    "mongoose": "^5.9.6",
+    "morgan": "^1.10.0"
   }
 }
